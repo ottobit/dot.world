@@ -11,7 +11,8 @@ updated: 2026-09-04
 **When to open this page.** Before adding a Node-only import to `src/core/`,
 before proposing a second language, or before splitting the repository.
 
-**Status:** accepted.
+**Status:** accepted; one supporting claim under revision — see
+[Open question](#open-question) below.
 
 ## Context
 
@@ -54,6 +55,19 @@ canvas is drawn by hand, as `dot` already is on the portfolio.
   policy exists twice, and the two copies would diverge.
 - **Do not split this into a monorepo** before there is a second consumer.
   The tax is real and the benefit is currently zero.
+
+## Open question
+
+The repository is staying private, so **GitHub Pages is not available** on a
+free plan and the "public demo with no backend" argument above no longer
+stands on its own. The isomorphic engine is still justified by the rest — the
+viewer runs locally with no backend, and a recorded run replays in a browser —
+but the deployment target is undecided. One candidate: publish the viewer
+bundle and a recorded run from the public `ottobit/portfolio` repository,
+which already serves Pages, while this repository stays private.
+
+Resolve this once the execution model is settled, and rewrite the Decision
+section rather than leaving the claim standing.
 
 ## See also
 

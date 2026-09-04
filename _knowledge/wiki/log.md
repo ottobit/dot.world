@@ -36,3 +36,17 @@ and `Act` writing to shared state. Decisions
 is labelled "still taking shape" and is kept as-is: it is an immutable source,
 not a specification. It should be redrawn on the portfolio once code confirms
 the design.
+
+## [2026-09-04] lint | 1 stale claim
+
+The repository will stay private and execution will work differently (exact
+model still to be defined by the user).
+
+- [`decisions/0001`](decisions/0001-typescript-isomorphic-engine.md) argued
+  the isomorphic engine partly from a public GitHub Pages demo. Pages is not
+  available on a free plan for a private repository, so that supporting claim
+  no longer holds. Flagged on the page as an open question rather than
+  rewritten — the replacement depends on a decision not yet taken.
+- Not caught by `_knowledge/lint/wiki.test.ts`, and correctly so: no link is
+  broken and no symbol is missing. The page simply became less true. This is
+  the first real case of the LLM half of Lint earning its place.
