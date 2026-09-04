@@ -1,0 +1,20 @@
+{
+  "name": "dot-world",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A world of sentient dots",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint:wiki": "vitest run _system/lint",
+    "lint:wiki:strict": "WIKI_STRICT=1 vitest run _system/lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
