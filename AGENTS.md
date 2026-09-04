@@ -166,20 +166,37 @@ Append-only, newest at the bottom, fixed prefix so it stays greppable:
 - Work on a dedicated branch. Descriptive commits. Open the PR **as a draft**.
 - **Never merge on your own initiative** — that decision is the user's alone.
   The exception is work born from a plan the user approved via ExitPlanMode.
-- **If this session has no GitHub tooling**, the pull request cannot be opened
-  from here: `gh` is absent, its release download is blocked by the egress
-  proxy, and although `api.github.com` is reachable there is no credential to
-  authenticate with — the git proxy injects auth for git operations only, and
-  `git credential fill` returns nothing. Do not report this as a surprise every
-  time. Push the branch and hand over a **prefilled** compare link so the user
-  clicks once and pastes nothing:
+- **Opening and merging the pull request is the agent's job, not the user's.**
+  `gh` is not installed and `git credential fill` returns nothing, but the
+  session's proxy injects authentication into `api.github.com` as well as into
+  git — so plain `curl` against the REST API is already authenticated. Do not
+  send the user a compare link and do not ask them to open anything.
 
-  ```
-  https://github.com/ottobit/dot.world/compare/main...<branch>?expand=1&title=<urlencoded>&body=<urlencoded>
+  ```sh
+  # open, always as a draft
+  curl -sS -X POST -H "Accept: application/vnd.github+json" \
+    --data @body.json https://api.github.com/repos/ottobit/dot.world/pulls
+  # body.json: {"title":..., "head":"<branch>", "base":"main", "draft":true, "body":...}
   ```
 
-  Keep the encoded body under roughly 6000 characters; put anything longer in
-  the commit message, where it belongs anyway.
+  `GET /repos/{owner}/{repo}` reports `permissions` as all `false` even though
+  writes succeed. **Ignore that field** — it made an earlier session conclude,
+  wrongly, that pull requests could not be created at all. Try the call.
+
+- **The PR stays a draft until the user says "Concludi"** (or "commit push PR",
+  or an explicit instruction to merge). That word means: mark it ready for
+  review, merge it, and confirm. Nothing else authorises a merge — not green
+  tests, not a finished task.
+
+  ```sh
+  # on "Concludi": ready for review, then merge
+  curl -sS -X PATCH --data '{"draft":false}' .../pulls/N
+  curl -sS -X PUT --data '{"merge_method":"merge"}' .../pulls/N/merge
+  ```
+
+  The one standing exception is work born from a plan the user approved via
+  ExitPlanMode: that approval already authorises the merge.
+
 - Verify before claiming something is done: `npm test`, `npx tsc --noEmit`,
   and Playwright when there is UI. Report results honestly, failures included.
 - No step is finished until the wiki has absorbed it (Ingest) and `log.md`

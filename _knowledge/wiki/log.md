@@ -160,3 +160,28 @@ layer stayed empty forever. Fixed with a bootstrap branch, guarded by a test.
 
 Still unverified: nothing here involves a model, so "a run driven by real
 models replays exactly" waits for step 7.
+
+## [2026-09-05] lint | pull requests can be opened from here after all
+
+An earlier entry in this repository's history recorded that pull requests
+could not be created from an agent session. **That was wrong**, and it was
+wrong in the expensive direction: it moved work onto the author for several
+changes in a row.
+
+What was actually checked before: `gh` is absent, its release download is
+blocked by the egress proxy, and `git credential fill` returns nothing. All
+three are true and none of them settle the question. What was not tried is the
+one thing that works — the proxy injects authentication into `api.github.com`
+as well as into git, so plain `curl` against the REST API is authenticated.
+`GET /user` returns the owner with no `Authorization` header at all.
+
+Two traps worth naming, since both point the wrong way:
+
+- `GET /repos/{owner}/{repo}` reports `permissions` as all `false` even though
+  writes succeed. Ignoring that field and trying the call anyway is what found
+  this.
+- An absent CLI is not an absent capability. The reasonable-sounding
+  conclusion was reached from three real observations and was still false.
+
+`AGENTS.md` now carries the working method for opening a draft PR and for
+merging it on "Concludi". PR #2 was opened this way.
