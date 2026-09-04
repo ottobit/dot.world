@@ -29,6 +29,9 @@ Inside `_knowledge/`:
 - `_knowledge/wiki/` — **the wiki.** You write and maintain every page here.
 - `_knowledge/lint/` — the automated half of Lint (`wiki.test.ts`).
 
+Everything outside `_knowledge/` is code. **Do not add `AGENTS.md` files under
+`src/`** — the coherence layer stays in one place.
+
 Source code is deliberately **not** in `raw/`: it changes on every commit and
 it is already the truth — read it directly rather than summarising it. `raw/`
 holds what the code does not contain and cannot be re-derived.
@@ -49,9 +52,8 @@ pages you need.
   → `_knowledge/wiki/recipes/`
 - **We already answered that** → `_knowledge/wiki/findings/`
 
-Directories under `src/` carry their own `AGENTS.md` with local invariants.
-The nearest one wins. They stay next to the code on purpose — their value is
-proximity. They point into the wiki; they never duplicate it.
+Local invariants for a module live in the wiki, not beside the code: for the
+engine, [`contracts/core-purity.md`](_knowledge/wiki/contracts/core-purity.md).
 
 ## Page conventions
 
@@ -164,6 +166,37 @@ Append-only, newest at the bottom, fixed prefix so it stays greppable:
 - Work on a dedicated branch. Descriptive commits. Open the PR **as a draft**.
 - **Never merge on your own initiative** — that decision is the user's alone.
   The exception is work born from a plan the user approved via ExitPlanMode.
+- **Opening and merging the pull request is the agent's job, not the user's.**
+  `gh` is not installed and `git credential fill` returns nothing, but the
+  session's proxy injects authentication into `api.github.com` as well as into
+  git — so plain `curl` against the REST API is already authenticated. Do not
+  send the user a compare link and do not ask them to open anything.
+
+  ```sh
+  # open, always as a draft
+  curl -sS -X POST -H "Accept: application/vnd.github+json" \
+    --data @body.json https://api.github.com/repos/ottobit/dot.world/pulls
+  # body.json: {"title":..., "head":"<branch>", "base":"main", "draft":true, "body":...}
+  ```
+
+  `GET /repos/{owner}/{repo}` reports `permissions` as all `false` even though
+  writes succeed. **Ignore that field** — it made an earlier session conclude,
+  wrongly, that pull requests could not be created at all. Try the call.
+
+- **The PR stays a draft until the user says "Concludi"** (or "commit push PR",
+  or an explicit instruction to merge). That word means: mark it ready for
+  review, merge it, and confirm. Nothing else authorises a merge — not green
+  tests, not a finished task.
+
+  ```sh
+  # on "Concludi": ready for review, then merge
+  curl -sS -X PATCH --data '{"draft":false}' .../pulls/N
+  curl -sS -X PUT --data '{"merge_method":"merge"}' .../pulls/N/merge
+  ```
+
+  The one standing exception is work born from a plan the user approved via
+  ExitPlanMode: that approval already authorises the merge.
+
 - Verify before claiming something is done: `npm test`, `npx tsc --noEmit`,
   and Playwright when there is UI. Report results honestly, failures included.
 - No step is finished until the wiki has absorbed it (Ingest) and `log.md`

@@ -5,8 +5,8 @@ need. Maintained on every Ingest and Query — see
 [`AGENTS.md`](../../AGENTS.md).
 
 Concepts, contracts and recipes arrive with the modules they describe — see
-the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core` exists;
-nothing else does yet.
+the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core`, `src/policies`, `src/sim` and
+`src/node` exist; there is no viewer, no news and no model yet.
 
 ## Reference
 
@@ -34,12 +34,16 @@ Read these **before** proposing a redesign. Each one carries a
 |---|---|
 | [`concepts/world-state.md`](concepts/world-state.md) | What is in the world state, and what is deliberately not? |
 | [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) | What is the difference between an intent and an intention? |
+| [`concepts/percept.md`](concepts/percept.md) | What exactly does a dot see, and why is it kept so small? |
 
 ## Contracts
 
 | page | what it answers |
 |---|---|
 | [`contracts/step-function.md`](contracts/step-function.md) | What are the guarantees of `step()`, and what breaks if you relax them? |
+| [`contracts/core-purity.md`](contracts/core-purity.md) | What must never appear in `src/core`, and what breaks if it does? |
+| [`contracts/decision-policy.md`](contracts/decision-policy.md) | What must a `DecisionPolicy` do, and why is `ScriptedPolicy` not a test double? |
+| [`contracts/run-log.md`](contracts/run-log.md) | What is in a run log, and what makes a replay trustworthy? |
 
 ## Recipes
 
@@ -52,6 +56,7 @@ Summaries of the immutable material in [`../raw/`](../raw/).
 | page | what it answers |
 |---|---|
 | [`sources/2026-09-04-initial-plan.md`](sources/2026-09-04-initial-plan.md) | What did the initial Dot World plan decide, and what did it leave open? |
+| [`sources/2026-09-05-first-scripted-run.md`](sources/2026-09-05-first-scripted-run.md) | What did the first full scripted run show? |
 
 ## Findings
 
