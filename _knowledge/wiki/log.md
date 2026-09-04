@@ -102,3 +102,19 @@ with how often a dot can afford to deliberate.
 
 Open from step 3: nothing writes a run log yet, so `raw/runs/` is still empty
 and the replay claim in decision 0002 is unverified end to end.
+
+## [2026-09-05] lint | repository made public
+
+- Verified by anonymous read, not assumed: `git ls-remote` without credentials
+  succeeds.
+- [`decisions/0001`](decisions/0001-typescript-isomorphic-engine.md): the
+  claim flagged as stale on 2026-09-04 is **restored** — GitHub Pages is
+  available on a free plan for a public repository. Left as an open question
+  rather than closed, because the deployment target was never only a technical
+  matter and has not been named.
+- New standing rule recorded on that page: everything in `_knowledge/raw/` is
+  now world-readable and permanently so. **Do not archive a source you would
+  not publish.** Nothing sensitive is in it today.
+- Pull request #1 was merged into `main` as a true merge commit (`d2261e3`),
+  history preserved. This branch had two commits beyond it and no open pull
+  request; rebased onto `main` so the next pull request shows exactly those two.

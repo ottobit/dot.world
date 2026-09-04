@@ -12,8 +12,8 @@ updated: 2026-09-04
 **When to open this page.** Before adding a Node-only import to `src/core/`,
 before proposing a second language, or before splitting the repository.
 
-**Status:** accepted; one supporting claim under revision — see
-[Open question](#open-question) below.
+**Status:** accepted. One supporting claim was invalidated and then restored —
+see [Open question](#open-question) below.
 
 ## Context
 
@@ -59,16 +59,28 @@ canvas is drawn by hand, as `dot` already is on the portfolio.
 
 ## Open question
 
-The repository is staying private, so **GitHub Pages is not available** on a
-free plan and the "public demo with no backend" argument above no longer
-stands on its own. The isomorphic engine is still justified by the rest — the
-viewer runs locally with no backend, and a recorded run replays in a browser —
-but the deployment target is undecided. One candidate: publish the viewer
-bundle and a recorded run from the public `ottobit/portfolio` repository,
-which already serves Pages, while this repository stays private.
+**Update, same day: the repository is public.** Anonymous reads succeed, so
+GitHub Pages is available on a free plan again and the constraint that
+invalidated this argument is gone. The earlier note — that Pages was
+unavailable on a private repository — is superseded.
 
-Resolve this once the execution model is settled, and rewrite the Decision
-section rather than leaving the claim standing.
+The question is not fully closed, because the deployment target was never only
+a matter of what is technically possible: the author separately said execution
+would work differently, and did not say how. The isomorphic engine stands on
+its own either way — the viewer runs locally with no backend, and a recorded
+run replays in a browser — so nothing in the Decision section depends on the
+answer.
+
+Close this by naming the target once it is decided: Pages on this repository,
+the viewer published from the public `ottobit/portfolio` repository, or local
+only.
+
+**Consequence of being public, worth knowing before it bites:**
+everything under `_knowledge/raw/` is now world-readable, permanently, and
+forks and caches do not retract. That directory is meant to hold saved design
+conversations and run logs carrying raw model responses. Nothing sensitive is
+in it today — portfolio snapshots and the initial plan — but the rule to apply
+from here on is: **do not archive a source you would not publish.**
 
 ## See also
 
