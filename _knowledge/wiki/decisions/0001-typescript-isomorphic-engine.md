@@ -3,6 +3,7 @@ id: decisions/0001-typescript-isomorphic-engine
 type: decision
 title: Why is the engine one TypeScript package that runs in both Node and the browser?
 depends_on: [glossary#replay, glossary#run-log]
+sources: [_knowledge/raw/plans/2026-09-04-initial-plan.md]
 updated: 2026-09-04
 ---
 

@@ -50,3 +50,24 @@ model still to be defined by the user).
 - Not caught by `_knowledge/lint/wiki.test.ts`, and correctly so: no link is
   broken and no symbol is missing. The page simply became less true. This is
   the first real case of the LLM half of Lint earning its place.
+
+## [2026-09-04] ingest | plan 2026-09-04-initial-plan
+
+First plan ingested under the new rule in `AGENTS.md`: an approved plan is
+archived verbatim in `raw/plans/`, and only what is knowable without code is
+written to the wiki.
+
+- Archived [`raw/plans/2026-09-04-initial-plan.md`](../raw/plans/2026-09-04-initial-plan.md)
+  (546 lines, Italian, verbatim — a source records what was written, it is not
+  kept current).
+- Wrote [`sources/2026-09-04-initial-plan.md`](sources/2026-09-04-initial-plan.md).
+- Added the plan to the `sources:` front-matter of decisions 0001-0005: they
+  came from it, and nothing recorded that.
+- Wrote nothing under `contracts/` or `concepts/`. The plan describes code that
+  does not exist; such a page would read as documentation, be verified by
+  nothing, and be invisible to the automated lint for want of a `covers:`
+  target.
+
+Two proposals in the plan remain unacted on and are named on the source page:
+the three corrections to the published diagram (different repository), and a
+dot's memory modelled as a wiki of its own (deferred to real numbers).

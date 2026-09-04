@@ -3,6 +3,7 @@ id: decisions/0002-sync-ticks-async-reasoning
 type: decision
 title: Why does the world advance in synchronous ticks while reasoning happens outside them?
 depends_on: [glossary#tick, glossary#deliberation, glossary#intention]
+sources: [_knowledge/raw/plans/2026-09-04-initial-plan.md]
 updated: 2026-09-04
 ---
 

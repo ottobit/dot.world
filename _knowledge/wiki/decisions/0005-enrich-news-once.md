@@ -3,6 +3,7 @@ id: decisions/0005-enrich-news-once
 type: decision
 title: Why is a news item enriched once for everyone instead of read by each dot?
 depends_on: [glossary#enricher, glossary#stimulus, glossary#salience]
+sources: [_knowledge/raw/plans/2026-09-04-initial-plan.md]
 updated: 2026-09-04
 ---
 

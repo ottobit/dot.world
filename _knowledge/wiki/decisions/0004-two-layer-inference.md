@@ -3,6 +3,7 @@ id: decisions/0004-two-layer-inference
 type: decision
 title: Why is inference split into a transport layer and a decision layer?
 depends_on: [glossary#languagemodel, glossary#policy, glossary#deliberation]
+sources: [_knowledge/raw/plans/2026-09-04-initial-plan.md]
 updated: 2026-09-04
 ---
 

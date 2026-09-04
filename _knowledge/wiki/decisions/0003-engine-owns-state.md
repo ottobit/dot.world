@@ -3,6 +3,7 @@ id: decisions/0003-engine-owns-state
 type: decision
 title: Why does no dot ever write to the world state?
 depends_on: [glossary#intent, glossary#world-state, glossary#mark]
+sources: [_knowledge/raw/plans/2026-09-04-initial-plan.md]
 updated: 2026-09-04
 ---
 

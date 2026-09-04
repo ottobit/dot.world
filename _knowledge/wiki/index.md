@@ -5,7 +5,8 @@ need. Maintained on every Ingest and Query — see
 [`AGENTS.md`](../../AGENTS.md).
 
 Nothing here yet describes code, because there is no code yet. Concepts,
-contracts and recipes arrive with the modules they describe.
+contracts and recipes arrive with the modules they describe — see the
+approved-plan rule in [`AGENTS.md`](../../AGENTS.md).
 
 ## Reference
 
@@ -43,7 +44,9 @@ Read these **before** proposing a redesign. Each one carries a
 
 Summaries of the immutable material in [`../raw/`](../raw/).
 
-*(empty — the first will be the first real run log)*
+| page | what it answers |
+|---|---|
+| [`sources/2026-09-04-initial-plan.md`](sources/2026-09-04-initial-plan.md) | What did the initial Dot World plan decide, and what did it leave open? |
 
 ## Findings
 

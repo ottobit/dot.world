@@ -19,8 +19,13 @@ put the content in the wiki.
 Inside `_knowledge/`:
 
 - `_knowledge/raw/` — **immutable sources.** Run logs, benchmark output, articles
-  read, saved design conversations, snapshots of the portfolio references.
-  Read them. **Never edit or delete a file in `raw/`.**
+  read, approved plans (`raw/plans/`), saved design conversations, snapshots of
+  the portfolio references. Read them.
+  **Never edit or delete a file in `raw/`.** A source is a record of what was
+  written at a moment, not a document to keep current — including when it was
+  written in Italian and the wiki is in English, and including when a later
+  decision contradicts it. Contradictions get annotated in the wiki, never
+  fixed at the source.
 - `_knowledge/wiki/` — **the wiki.** You write and maintain every page here.
 - `_knowledge/lint/` — the automated half of Lint (`wiki.test.ts`).
 
@@ -92,6 +97,34 @@ Rules:
    do not silently resolve it.** Say which claim is older and which source
    supports each side.
 6. Update `index.md`. Append to `log.md`.
+
+### Ingest — an approved plan
+
+A plan the user approved is a source like any other, with one difference that
+matters: **it describes code that does not exist yet.** Split it in two.
+
+**On approval:**
+
+1. Copy the plan verbatim to `_knowledge/raw/plans/<YYYY-MM-DD>-<slug>.md`.
+   Verbatim: it is the record of what was agreed, not a draft to improve.
+2. Write `_knowledge/wiki/sources/<same-slug>.md` summarising it.
+3. Write or update only what is **knowable without code**: `decisions/` pages,
+   the glossary, and any existing page the plan changes. Add the plan to those
+   pages' `sources:`.
+4. Update `index.md`. Append `## [date] ingest | plan <slug>` to `log.md`.
+
+**With the code, not before:** `contracts/` and `concepts/` pages ship in the
+same pull request as the module they describe, carrying `covers:` and
+`exports:` so the automated lint binds them to files that actually exist.
+
+**Do not write a `contracts/` or `concepts/` page from a plan alone.** It reads
+as documentation and is a wish. Nothing verifies it, the automated lint cannot
+see it — there is no `covers:` target to compare against — and it will be false
+within two commits. The damage is not the wrong page; it is that the wiki has
+taught the reader it can be trusted.
+
+Development follows the plan's own work order, and each step closes with its
+own Ingest.
 
 ### Query — a question is asked of the wiki
 
