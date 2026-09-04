@@ -71,3 +71,34 @@ written to the wiki.
 Two proposals in the plan remain unacted on and are named on the source page:
 the three corrections to the published diagram (different repository), and a
 dot's memory modelled as a wiki of its own (deferred to real numbers).
+
+## [2026-09-04] ingest | src/core
+
+Step 3 of the plan's work order: the engine, with determinism tests written
+before anything is visible on screen.
+
+- `src/core/{types,rng,hash,grid,world,step}.ts` and `step.test.ts`.
+  28 tests pass; `tsc --noEmit` clean.
+- Wrote [`contracts/step-function.md`](contracts/step-function.md),
+  [`concepts/world-state.md`](concepts/world-state.md),
+  [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) and
+  `src/core/AGENTS.md` in the same pass as the code, each carrying `covers:`
+  and `exports:`. This is the first time the automated lint has had real files
+  to bind to, and it caught index drift on the first run.
+- **Deviation from the plan, recorded on the contract page:** the plan sketched
+  `step(state, intents, rng)`; the signature takes `config` and leaves the
+  generator in `state.rngState`. A live generator passed alongside a state that
+  also stores its seed is two sources of truth, and the argument copy would not
+  survive serialisation into a run log.
+
+Finding from a 1000-tick run of twelve dots, written up under "The energy
+budget is a constraint nobody chose explicitly" in
+[`concepts/world-state.md`](concepts/world-state.md): **4172 of 12558 events
+were refusals for want of energy.** The engine is correct — it refuses and
+says so — but `DEFAULT_CONFIG` implies a rhythm of roughly one rest every six
+ticks that nobody chose deliberately. Left untuned on purpose: it should be
+tuned against a real policy, not against the test's stand-in, and it interacts
+with how often a dot can afford to deliberate.
+
+Open from step 3: nothing writes a run log yet, so `raw/runs/` is still empty
+and the replay claim in decision 0002 is unverified end to end.

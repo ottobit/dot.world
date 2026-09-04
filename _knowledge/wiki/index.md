@@ -4,9 +4,9 @@ The catalogue of every page. **Read this first**, then open only what you
 need. Maintained on every Ingest and Query — see
 [`AGENTS.md`](../../AGENTS.md).
 
-Nothing here yet describes code, because there is no code yet. Concepts,
-contracts and recipes arrive with the modules they describe — see the
-approved-plan rule in [`AGENTS.md`](../../AGENTS.md).
+Concepts, contracts and recipes arrive with the modules they describe — see
+the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core` exists;
+nothing else does yet.
 
 ## Reference
 
@@ -30,11 +30,16 @@ Read these **before** proposing a redesign. Each one carries a
 
 ## Concepts
 
-*(empty — pages arrive with the code they describe)*
+| page | what it answers |
+|---|---|
+| [`concepts/world-state.md`](concepts/world-state.md) | What is in the world state, and what is deliberately not? |
+| [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) | What is the difference between an intent and an intention? |
 
 ## Contracts
 
-*(empty — pages arrive with the interfaces they describe)*
+| page | what it answers |
+|---|---|
+| [`contracts/step-function.md`](contracts/step-function.md) | What are the guarantees of `step()`, and what breaks if you relax them? |
 
 ## Recipes
 
