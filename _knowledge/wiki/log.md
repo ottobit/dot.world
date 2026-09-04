@@ -185,3 +185,25 @@ Two traps worth naming, since both point the wrong way:
 
 `AGENTS.md` now carries the working method for opening a draft PR and for
 merging it on "Concludi". PR #2 was opened this way.
+
+## [2026-09-05] lint | the merge recipe written yesterday did not work
+
+`AGENTS.md` was given a "Concludi" recipe — `PATCH {"draft": false}` then
+`PUT .../merge` — that had never been run. Neither half works:
+
+- REST **silently ignores** `draft` in a PATCH. It answers `200` with a full
+  pull request body and the pull request is still a draft. Nothing about the
+  response says the field was dropped.
+- `markPullRequestReadyForReview`, the GraphQL mutation that does work in
+  general, is refused by this session's proxy: only a pinned set of PR-review
+  operations is served.
+- `PUT .../merge` on a draft answers `405 Pull Request is still a draft`.
+
+The recipe now merges with git and lets GitHub notice — a pull request is
+marked merged as soon as its head is reachable from the base. Verified on
+PR #2: `merged: true`.
+
+The pattern is the same one recorded two entries ago, in the opposite
+direction. There it was a capability wrongly assumed absent; here a capability
+wrongly assumed present. Both came from writing down a conclusion instead of a
+result. **Do not put a command in `AGENTS.md` that has not been run.**
