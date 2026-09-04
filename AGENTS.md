@@ -164,6 +164,20 @@ Append-only, newest at the bottom, fixed prefix so it stays greppable:
 - Work on a dedicated branch. Descriptive commits. Open the PR **as a draft**.
 - **Never merge on your own initiative** — that decision is the user's alone.
   The exception is work born from a plan the user approved via ExitPlanMode.
+- **If this session has no GitHub tooling**, the pull request cannot be opened
+  from here: `gh` is absent, its release download is blocked by the egress
+  proxy, and although `api.github.com` is reachable there is no credential to
+  authenticate with — the git proxy injects auth for git operations only, and
+  `git credential fill` returns nothing. Do not report this as a surprise every
+  time. Push the branch and hand over a **prefilled** compare link so the user
+  clicks once and pastes nothing:
+
+  ```
+  https://github.com/ottobit/dot.world/compare/main...<branch>?expand=1&title=<urlencoded>&body=<urlencoded>
+  ```
+
+  Keep the encoded body under roughly 6000 characters; put anything longer in
+  the commit message, where it belongs anyway.
 - Verify before claiming something is done: `npm test`, `npx tsc --noEmit`,
   and Playwright when there is UI. Report results honestly, failures included.
 - No step is finished until the wiki has absorbed it (Ingest) and `log.md`
