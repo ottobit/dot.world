@@ -19,7 +19,7 @@ import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const WIKI = join(REPO, '_system/wiki');
+const WIKI = join(REPO, '_knowledge/wiki');
 const STRICT = process.env.WIKI_STRICT === '1';
 
 /** Pages that are lists by nature: no front-matter, exempt from the size rule. */
@@ -159,6 +159,18 @@ function soft(label: string, problems: string[]): void {
 }
 
 const pages = loadPages();
+
+describe('wiki lint itself', () => {
+  it('is actually looking at the wiki', () => {
+    // Without this, a wrong WIKI path (a rename, a moved directory) makes
+    // every loop below iterate over nothing and the whole suite passes
+    // vacuously — the most dangerous way for a lint to fail.
+    expect(pages.map((p) => p.rel)).toEqual(
+      expect.arrayContaining(['index.md', 'log.md', 'glossary.md']),
+    );
+    expect(pages.filter((p) => p.rel.startsWith('decisions/')).length).toBeGreaterThanOrEqual(5);
+  });
+});
 
 describe('wiki front-matter', () => {
   it('every page has parseable front-matter with a valid id, type and title', () => {

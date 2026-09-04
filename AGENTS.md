@@ -14,15 +14,15 @@ put the content in the wiki.
 | layer | path | who owns it | mutable? |
 |---|---|---|---|
 | **code** | `src/`, config files | humans + agents, via PRs | yes |
-| **coherence** | `_system/` | the LLM writes it, the human reads it | see below |
+| **coherence** | `_knowledge/` | the LLM writes it, the human reads it | see below |
 
-Inside `_system/`:
+Inside `_knowledge/`:
 
-- `_system/raw/` — **immutable sources.** Run logs, benchmark output, articles
+- `_knowledge/raw/` — **immutable sources.** Run logs, benchmark output, articles
   read, saved design conversations, snapshots of the portfolio references.
   Read them. **Never edit or delete a file in `raw/`.**
-- `_system/wiki/` — **the wiki.** You write and maintain every page here.
-- `_system/lint/` — the automated half of Lint (`wiki.test.ts`).
+- `_knowledge/wiki/` — **the wiki.** You write and maintain every page here.
+- `_knowledge/lint/` — the automated half of Lint (`wiki.test.ts`).
 
 Source code is deliberately **not** in `raw/`: it changes on every commit and
 it is already the truth — read it directly rather than summarising it. `raw/`
@@ -30,19 +30,19 @@ holds what the code does not contain and cannot be re-derived.
 
 ## Where to look
 
-Start at **[`_system/wiki/index.md`](_system/wiki/index.md)** — it catalogues
+Start at **[`_knowledge/wiki/index.md`](_knowledge/wiki/index.md)** — it catalogues
 every page with a one-line summary. Read the index first, then open only the
 pages you need.
 
-- **What happened recently?** → `_system/wiki/log.md`
-  (`grep "^## \[" _system/wiki/log.md | tail -5`)
-- **What does this word mean?** → `_system/wiki/glossary.md`
+- **What happened recently?** → `_knowledge/wiki/log.md`
+  (`grep "^## \[" _knowledge/wiki/log.md | tail -5`)
+- **What does this word mean?** → `_knowledge/wiki/glossary.md`
 - **Why is it built this way? Why not the obvious alternative?**
-  → `_system/wiki/decisions/` — read these **before** proposing a redesign.
-- **What is the contract of X?** → `_system/wiki/contracts/`
+  → `_knowledge/wiki/decisions/` — read these **before** proposing a redesign.
+- **What is the contract of X?** → `_knowledge/wiki/contracts/`
 - **How do I add a news source / an action / a model provider?**
-  → `_system/wiki/recipes/`
-- **We already answered that** → `_system/wiki/findings/`
+  → `_knowledge/wiki/recipes/`
+- **We already answered that** → `_knowledge/wiki/findings/`
 
 Directories under `src/` carry their own `AGENTS.md` with local invariants.
 The nearest one wins. They stay next to the code on purpose — their value is
@@ -59,7 +59,7 @@ type: concept | decision | contract | recipe | source | finding
 title: What a mark is, and why dots never talk to each other
 covers: [src/core/marks.ts]           # code files this page describes (optional)
 exports: [Mark, applyMark]            # symbols that must exist in `covers` (optional)
-sources: [_system/raw/reading/foo.md] # sources this page draws on (optional)
+sources: [_knowledge/raw/reading/foo.md] # sources this page draws on (optional)
 depends_on: [concepts/world-state]    # other pages, or glossary#term
 updated: 2026-09-04
 ---
@@ -81,11 +81,11 @@ Rules:
 
 ## The three workflows
 
-### Ingest — a new source arrives in `_system/raw/`
+### Ingest — a new source arrives in `_knowledge/raw/`
 
 1. Read the source in full.
 2. Discuss the key points with the human before writing.
-3. Write `_system/wiki/sources/<id>.md` summarising it.
+3. Write `_knowledge/wiki/sources/<id>.md` summarising it.
 4. **Update every wiki page the source touches.** This is the real work — one
    source often touches 10–15 pages.
 5. If the source contradicts an existing page, **annotate the contradiction;
@@ -97,7 +97,7 @@ Rules:
 
 1. Read `index.md`, then open the pages that look relevant.
 2. Answer **with citations to wiki pages**, not from memory.
-3. If the answer is worth keeping, file it as `_system/wiki/findings/<slug>.md`,
+3. If the answer is worth keeping, file it as `_knowledge/wiki/findings/<slug>.md`,
    link it from the related pages, update `index.md`, append to `log.md`.
    A good answer that stays in chat is a loss.
 

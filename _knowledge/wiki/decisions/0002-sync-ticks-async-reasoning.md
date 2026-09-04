@@ -16,7 +16,7 @@ budget.
 
 ## Context
 
-Read literally, the original sketch (`_system/raw/portfolio/dot-world-diagram.svg`)
+Read literally, the original sketch (`_knowledge/raw/portfolio/dot-world-diagram.svg`)
 says every dot runs `Perceive → Reason → Decide → Act` on every tick. With 12
 dots at 4 ticks per second that is 48 model calls a second. This is not a cost
 to optimise later: it puts the boundary between code and model in the wrong

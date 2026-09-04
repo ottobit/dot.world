@@ -12,6 +12,6 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true
   },
-  "include": ["src", "_system/lint"],
-  "exclude": ["node_modules", "dist", "_system/raw", "_system/wiki"]
+  "include": ["src", "_knowledge/lint"],
+  "exclude": ["node_modules", "dist", "_knowledge/raw", "_knowledge/wiki"]
 }

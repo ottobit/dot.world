@@ -8,8 +8,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint:wiki": "vitest run _system/lint",
-    "lint:wiki:strict": "WIKI_STRICT=1 vitest run _system/lint",
+    "lint:wiki": "vitest run _knowledge/lint",
+    "lint:wiki:strict": "WIKI_STRICT=1 vitest run _knowledge/lint",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

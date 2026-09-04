@@ -3,7 +3,7 @@
 Append-only, oldest first. Fixed prefix so it stays greppable:
 
 ```
-grep "^## \[" _system/wiki/log.md | tail -5
+grep "^## \[" _knowledge/wiki/log.md | tail -5
 ```
 
 Entry kinds: `ingest`, `query`, `lint`.
@@ -14,7 +14,7 @@ Entry kinds: `ingest`, `query`, `lint`.
 
 Repository created from an approved plan. No code yet.
 
-- Seeded `_system/raw/portfolio/` with `dot-world-diagram.svg` and
+- Seeded `_knowledge/raw/portfolio/` with `dot-world-diagram.svg` and
   `dot-world.html` from `ottobit/portfolio` — the sketch this project starts
   from, and the source the five decisions below argue with.
 - Wrote `AGENTS.md` (schema, page conventions, Ingest/Query/Lint) and
@@ -25,7 +25,7 @@ Repository created from an approved plan. No code yet.
 - Wrote decisions 0001–0005. These are the only category knowable before
   code exists, and the one that stops a later agent from undoing a deliberate
   choice.
-- Wrote `_system/lint/wiki.test.ts` — the automated half of Lint. It exists
+- Wrote `_knowledge/lint/wiki.test.ts` — the automated half of Lint. It exists
   from the first page, never bolted on later.
 
 Open contradiction, deliberately recorded rather than resolved: the source

@@ -17,8 +17,8 @@ schema, the glossary, and the five decisions the design rests on.
 ## Where to start
 
 - [`AGENTS.md`](AGENTS.md) — how this repository is organised and how to work in it
-- [`_system/wiki/index.md`](_system/wiki/index.md) — the wiki index
-- [`_system/wiki/decisions/`](_system/wiki/decisions/) — why it is built this way,
+- [`_knowledge/wiki/index.md`](_knowledge/wiki/index.md) — the wiki index
+- [`_knowledge/wiki/decisions/`](_knowledge/wiki/decisions/) — why it is built this way,
   and what not to do
 
 ## Commands

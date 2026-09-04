@@ -133,7 +133,7 @@ It knows nothing about dots. Prompt construction lives in the core. See
 
 Append-only JSONL, one line per tick, recording the state hash, the events,
 and **every model response**. It is what makes a run with real models
-reproducible, and it is the primary immutable source in `_system/raw/runs/`.
+reproducible, and it is the primary immutable source in `_knowledge/raw/runs/`.
 
 ## replay
 
