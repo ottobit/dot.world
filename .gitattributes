@@ -1,0 +1,3 @@
+# The coherence layer is documentation, not source. Without this, GitHub's
+# language stats report this repository as mostly Markdown.
+_knowledge/** linguist-documentation
