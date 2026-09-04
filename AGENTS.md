@@ -29,6 +29,9 @@ Inside `_knowledge/`:
 - `_knowledge/wiki/` — **the wiki.** You write and maintain every page here.
 - `_knowledge/lint/` — the automated half of Lint (`wiki.test.ts`).
 
+Everything outside `_knowledge/` is code. **Do not add `AGENTS.md` files under
+`src/`** — the coherence layer stays in one place.
+
 Source code is deliberately **not** in `raw/`: it changes on every commit and
 it is already the truth — read it directly rather than summarising it. `raw/`
 holds what the code does not contain and cannot be re-derived.
@@ -49,9 +52,8 @@ pages you need.
   → `_knowledge/wiki/recipes/`
 - **We already answered that** → `_knowledge/wiki/findings/`
 
-Directories under `src/` carry their own `AGENTS.md` with local invariants.
-The nearest one wins. They stay next to the code on purpose — their value is
-proximity. They point into the wiki; they never duplicate it.
+Local invariants for a module live in the wiki, not beside the code: for the
+engine, [`contracts/core-purity.md`](_knowledge/wiki/contracts/core-purity.md).
 
 ## Page conventions
 

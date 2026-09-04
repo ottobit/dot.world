@@ -68,4 +68,4 @@ it must read from `state.rngState` and write the advanced state back.
 ## See also
 
 - [`concepts/world-state.md`](../concepts/world-state.md) — what is in the state and why
-- [`src/core/AGENTS.md`](../../../src/core/AGENTS.md) — the local invariants
+- [`contracts/core-purity.md`](core-purity.md) — what must never appear in `src/core`
