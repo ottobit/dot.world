@@ -5,8 +5,8 @@ need. Maintained on every Ingest and Query — see
 [`AGENTS.md`](../../AGENTS.md).
 
 Concepts, contracts and recipes arrive with the modules they describe — see
-the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core`, `src/policies`, `src/sim` and
-`src/node` exist; there is no viewer, no news and no model yet.
+the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core`, `src/policies`, `src/sim`,
+`src/node` and `src/web` exist; there is no news ingestion and no model yet.
 
 ## Reference
 
@@ -44,6 +44,7 @@ Read these **before** proposing a redesign. Each one carries a
 | [`contracts/core-purity.md`](contracts/core-purity.md) | What must never appear in `src/core`, and what breaks if it does? |
 | [`contracts/decision-policy.md`](contracts/decision-policy.md) | What must a `DecisionPolicy` do, and why is `ScriptedPolicy` not a test double? |
 | [`contracts/run-log.md`](contracts/run-log.md) | What is in a run log, and what makes a replay trustworthy? |
+| [`contracts/viewer.md`](contracts/viewer.md) | What does the viewer run, and why is it not a rendering of a simulation? |
 
 ## Recipes
 

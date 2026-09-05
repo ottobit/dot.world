@@ -186,6 +186,7 @@ Two traps worth naming, since both point the wrong way:
 `AGENTS.md` now carries the working method for opening a draft PR and for
 merging it on "Concludi". PR #2 was opened this way.
 
+
 ## [2026-09-05] lint | the merge recipe written yesterday did not work
 
 `AGENTS.md` was given a "Concludi" recipe — `PATCH {"draft": false}` then
@@ -207,3 +208,31 @@ The pattern is the same one recorded two entries ago, in the opposite
 direction. There it was a capability wrongly assumed absent; here a capability
 wrongly assumed present. Both came from writing down a conclusion instead of a
 result. **Do not put a command in `AGENTS.md` that has not been run.**
+
+## [2026-09-05] ingest | src/web — the viewer
+
+Step 5 of the work order: the first part of Dot World you look at instead of
+reading about.
+
+- `src/web/{index.html,main.ts,render.ts,favicon.svg}`, Vite config, Playwright
+  config, `e2e/viewer.spec.ts`. Wrote
+  [`contracts/viewer.md`](contracts/viewer.md).
+- Live mode runs the engine in the page; `?replay=<url>` re-plays a run log.
+  Built bundle is 14.3 kB, 6.1 kB gzipped.
+- Verified in a real browser, not deduced: twelve dots, the world advancing,
+  marks appearing, the inspector opening with the percept in it, pause really
+  stopping, step advancing exactly one tick, and zero console errors.
+- One end-to-end test counts **distinct colours on the canvas**, because
+  "everything runs, nothing is drawn" passes every DOM assertion there is.
+- Two things the browser found that no unit test would have: top-level `await`
+  is not available at the `es2020` build target (wrapped in a function rather
+  than raising the target and dropping older browsers), and a missing favicon
+  produced a 404 that failed the zero-console-errors assertion. The favicon was
+  added; the assertion was not loosened.
+- A stats label read `events` while showing the count for the last tick only.
+  Now `events/tick`.
+
+Replay mode is verified in the browser too: a 300-tick, 8-dot sample run ships
+as a page asset (280 kB) and an end-to-end test drives it to the last tick.
+`ReplayPolicy` throws on a tick the log does not carry, so reaching tick 300
+with zero console errors *is* the assertion that every tick matched.
