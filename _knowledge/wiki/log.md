@@ -236,3 +236,66 @@ Replay mode is verified in the browser too: a 300-tick, 8-dot sample run ships
 as a page asset (280 kB) and an end-to-end test drives it to the last tick.
 `ReplayPolicy` throws on a tick the log does not carry, so reaching tick 300
 with zero console errors *is* the assertion that every tick matched.
+
+## [2026-09-05] ingest | src/news — the world stops being sealed off
+
+Step 6 of the work order. Two keyless public sources, a deterministic
+enricher, a poller, and stimuli that land in the world as pressure.
+Wrote [`contracts/news.md`](contracts/news.md) and
+[`concepts/stimulus-pipeline.md`](concepts/stimulus-pipeline.md). 66 tests.
+
+**A design flaw the tests caught before any human did.** The first version used
+`stimulusRadius: 3`. On a 64×36 world that is **1.2% of the cells**: twelve
+dots essentially never walk into a stimulus, so news would have been
+decoration. The test that failed was the one asserting a dot moves toward news
+it cares about — it did not move, and the reason was the radius, not the test.
+
+Raising the radius was only affordable after changing how pressure is computed:
+**by distance on demand** rather than materialised into the grid. Materialising
+is O(radius²) per stimulus per tick, which is exactly what forced the radius to
+be small. It is 10 now (~14% of the world), and a test holds that fraction
+above 10%.
+
+**Two verifications worth naming.** Adding `stimuli` to `WorldState` meant
+extending `canonicalise` in the same commit — the rule
+[`contracts/core-purity.md`](contracts/core-purity.md) states — and a test now
+asserts two worlds differing only in news hash differently. And a 1000-tick run
+without `--news` still ends at hash `fdc774c2`, unchanged from before this
+work: the feature added nothing to existing behaviour.
+
+**What is not verified.** Both live endpoints answer `403` through this
+environment's egress proxy, so nothing here has parsed a real response. The
+parsing matches `ottobit/portfolio`'s `script.js` URL for URL and field for
+field — code that runs against these endpoints in production — and fixture
+tests pin those shapes. The first run on an unblocked network should check it.
+
+Measured with real headlines through a stubbed source, 200 ticks and 12 dots:
+**10 of 12 dots were inside some news at any moment**, marks grew 0 → 14
+alongside, and the enricher assigned the expected topics and valence.
+
+## [2026-09-05] lint | CI caught three stale pages that local runs could not
+
+`wiki lint (strict)` failed on PR #5 while the same command passed locally.
+Not a flake, and not a CI quirk: the **staleness check can only see committed
+files**. `git log -1 -- <file>` returns nothing for a file that is not yet in
+history, so locally every page under `covers:` was silently skipped. CI runs
+with `fetch-depth: 0` against the pushed commits, where the dates exist.
+
+Three pages described code the news work had changed underneath them:
+
+- [`contracts/step-function.md`](contracts/step-function.md) — the worst of the
+  three. It stated "no rule currently draws from it" about `rngState`. Stimulus
+  placement had made that **false**, and it is exactly the kind of claim a
+  future agent would have built on. Now documents the `arrivals` parameter, the
+  end-of-tick order, and the obligation to read the generator from the state
+  and write it back.
+- [`concepts/world-state.md`](concepts/world-state.md) — missing `stimuli`, and
+  missing why stimulus pressure is *also* kept out of the grid.
+- [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) — events
+  that no intent causes now have their own section.
+
+**The local/CI gap is worth keeping in mind rather than closing.** Making the
+check work on uncommitted files would mean guessing at mtimes, which drift for
+reasons that have nothing to do with authorship. The honest shape is what it
+already is: a warning locally, an error in CI, and the knowledge that a green
+local run does not clear staleness.

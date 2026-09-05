@@ -7,7 +7,7 @@
  * new mark near an existing one of the same topic reinforces it instead of
  * adding another.
  */
-import type { Mark, Topic, Vec2 } from './types.js';
+import type { Mark, Stimulus, Topic, Vec2 } from './types.js';
 
 /** Topic to summed strength, for one cell. */
 export type CellTopics = ReadonlyMap<Topic, number>;
@@ -27,19 +27,50 @@ export function cellOf(pos: Vec2): { cx: number; cy: number } {
   return { cx: Math.floor(pos.x), cy: Math.floor(pos.y) };
 }
 
+/**
+ * How strongly a stimulus is felt at a cell: linear falloff from where it
+ * landed, zero beyond its radius.
+ *
+ * Computed on demand rather than materialised into the grid. Materialising is
+ * O(radius^2) per stimulus per tick, which caps the radius at a value so small
+ * that news never reaches anyone — measured: at radius 3 a stimulus covers
+ * 1.2% of a 64x36 world, and twelve dots essentially never walk into it. This
+ * way the radius can be large enough to matter and the cost is O(stimuli) at
+ * the few cells anyone actually looks at.
+ */
+export function stimulusPressureAt(
+  stimuli: readonly Stimulus[],
+  cx: number,
+  cy: number,
+  radius: number,
+): Map<Topic, number> {
+  const out = new Map<Topic, number>();
+  for (const s of stimuli) {
+    const { cx: sx, cy: sy } = cellOf(s.pos);
+    const dx = sx - cx;
+    const dy = sy - cy;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance > radius) continue;
+    const felt = s.intensity * (1 - distance / (radius + 1));
+    for (const topic of s.topics) out.set(topic, (out.get(topic) ?? 0) + felt);
+  }
+  return out;
+}
+
 export function buildGrid(marks: readonly Mark[], width: number, height: number): Grid {
   const cells = new Map<number, Map<Topic, number>>();
-  for (const m of marks) {
-    const { cx, cy } = cellOf(m.pos);
-    if (cx < 0 || cy < 0 || cx >= width || cy >= height) continue;
+  const add = (c: { pos: Vec2; topic: Topic; strength: number }): void => {
+    const { cx, cy } = cellOf(c.pos);
+    if (cx < 0 || cy < 0 || cx >= width || cy >= height) return;
     const key = cy * width + cx;
     let cell = cells.get(key);
     if (!cell) {
       cell = new Map();
       cells.set(key, cell);
     }
-    cell.set(m.topic, (cell.get(m.topic) ?? 0) + m.strength);
-  }
+    cell.set(c.topic, (cell.get(c.topic) ?? 0) + c.strength);
+  };
+  for (const m of marks) add(m);
 
   const at = (cx: number, cy: number): CellTopics => {
     if (cx < 0 || cy < 0 || cx >= width || cy >= height) return EMPTY;

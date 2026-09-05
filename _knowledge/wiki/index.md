@@ -5,8 +5,8 @@ need. Maintained on every Ingest and Query — see
 [`AGENTS.md`](../../AGENTS.md).
 
 Concepts, contracts and recipes arrive with the modules they describe — see
-the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). `src/core`, `src/policies`, `src/sim`,
-`src/node` and `src/web` exist; there is no news ingestion and no model yet.
+the approved-plan rule in [`AGENTS.md`](../../AGENTS.md). Everything but the model layer exists:
+`src/core`, `src/policies`, `src/sim`, `src/node`, `src/web`, `src/news`.
 
 ## Reference
 
@@ -35,6 +35,7 @@ Read these **before** proposing a redesign. Each one carries a
 | [`concepts/world-state.md`](concepts/world-state.md) | What is in the world state, and what is deliberately not? |
 | [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) | What is the difference between an intent and an intention? |
 | [`concepts/percept.md`](concepts/percept.md) | What exactly does a dot see, and why is it kept so small? |
+| [`concepts/stimulus-pipeline.md`](concepts/stimulus-pipeline.md) | How does news reach a dot, and why as weather rather than as a message? |
 
 ## Contracts
 
@@ -45,6 +46,7 @@ Read these **before** proposing a redesign. Each one carries a
 | [`contracts/decision-policy.md`](contracts/decision-policy.md) | What must a `DecisionPolicy` do, and why is `ScriptedPolicy` not a test double? |
 | [`contracts/run-log.md`](contracts/run-log.md) | What is in a run log, and what makes a replay trustworthy? |
 | [`contracts/viewer.md`](contracts/viewer.md) | What does the viewer run, and why is it not a rendering of a simulation? |
+| [`contracts/news.md`](contracts/news.md) | How does a headline become something a dot can feel? |
 
 ## Recipes
 

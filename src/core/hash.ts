@@ -43,6 +43,13 @@ export function canonicalise(state: WorldState): string {
       m.strength.toString(), m.createdTick.toString(), m.byDot,
     );
   }
+  for (const st of state.stimuli) {
+    parts.push(
+      'S', st.id, st.sourceId, st.pos.x.toString(), st.pos.y.toString(),
+      st.topics.join(','), st.valence.toString(), st.intensity.toString(),
+      st.arrivedTick.toString(),
+    );
+  }
   return parts.join(' ');
 }
 

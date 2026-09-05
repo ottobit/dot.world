@@ -7,8 +7,8 @@
  * else. No internals, no intentions, no energy — telepathy would make marks
  * pointless, and marks are the only intended channel between dots.
  */
-import { cellOf, type Grid } from './grid.js';
-import type { Dot, DotId, Topic, WorldEvent, WorldState } from './types.js';
+import { cellOf, stimulusPressureAt, type Grid } from './grid.js';
+import type { Dot, DotId, Topic, WorldConfig, WorldEvent, WorldState } from './types.js';
 
 /** Rounded so two nearly-equal percepts quantise to the same cache key. */
 const round = (n: number): number => Math.round(n * 100) / 100;
@@ -45,13 +45,21 @@ const VISION = 8;
  * vectors away from the dot's own cell. Returns null when nothing is strong
  * enough to be worth moving toward.
  */
-function gradient(grid: Grid, cx: number, cy: number, topic: Topic): readonly [number, number] | null {
+function gradient(
+  grid: Grid,
+  state: WorldState,
+  cx: number,
+  cy: number,
+  topic: Topic,
+  config: WorldConfig,
+): readonly [number, number] | null {
   let dx = 0;
   let dy = 0;
   for (let oy = -1; oy <= 1; oy++) {
     for (let ox = -1; ox <= 1; ox++) {
       if (ox === 0 && oy === 0) continue;
-      const s = grid.at(cx + ox, cy + oy).get(topic) ?? 0;
+      const s = (grid.at(cx + ox, cy + oy).get(topic) ?? 0)
+        + (stimulusPressureAt(state.stimuli, cx + ox, cy + oy, config.stimulusRadius).get(topic) ?? 0);
       dx += ox * s;
       dy += oy * s;
     }
@@ -66,17 +74,26 @@ export function buildPercept(
   dot: Dot,
   grid: Grid,
   previousEvents: readonly WorldEvent[],
+  config: WorldConfig,
 ): Percept {
   const { cx, cy } = cellOf(dot.pos);
 
-  const around = [...grid.neighbourhood(cx, cy)]
+  // Marks and news are one sensation. A dot feels topic pressure without
+  // knowing whether another dot left it or the world outside did — which is
+  // what "news arrives as weather, not as a message" means in code.
+  const felt = new Map(grid.neighbourhood(cx, cy));
+  for (const [topic, strength] of stimulusPressureAt(state.stimuli, cx, cy, config.stimulusRadius)) {
+    felt.set(topic, (felt.get(topic) ?? 0) + strength);
+  }
+
+  const around = [...felt]
     // Ties break on topic name so the order never depends on map iteration.
     .sort((a, b) => (b[1] === a[1] ? (a[0] < b[0] ? -1 : 1) : b[1] - a[1]))
     .slice(0, MAX_AROUND)
     .map(([topic, strength]) => ({ topic, strength: round(strength) }));
 
   const strongest = around[0];
-  const dir = strongest ? gradient(grid, cx, cy, strongest.topic) : null;
+  const dir = strongest ? gradient(grid, state, cx, cy, strongest.topic, config) : null;
 
   const neighbours = state.dots
     .filter((o) => o.id !== dot.id)

@@ -5,7 +5,7 @@ title: What is in the world state, and what is deliberately not?
 covers: [src/core/types.ts, src/core/world.ts, src/core/grid.ts]
 exports: [WorldState, Dot, Mark, WorldConfig, DEFAULT_CONFIG, createWorld, resolveConfig, buildGrid, cellOf, strongestTopic]
 depends_on: [contracts/step-function, glossary#world-state, glossary#mark]
-updated: 2026-09-04
+updated: 2026-09-05
 ---
 
 # The world state
@@ -25,6 +25,7 @@ Owned exclusively by the engine. No dot writes to it — decision
 | `width`, `height` | the world in cells; positions are continuous inside the box |
 | `dots` | id, position, colour, energy, what it is saying |
 | `marks` | the stigmergic layer, and the only channel between dots |
+| `stimuli` | news that has entered the world, with its title kept for the viewer and the log — never for a dot |
 | `nextMarkSeq` | mark ids are sequential, so they are stable across a replay |
 
 ## What is deliberately not in it
@@ -34,6 +35,11 @@ Owned exclusively by the engine. No dot writes to it — decision
   drift away from it. Marks stay bounded because they decay and because a new
   mark near an existing one of the same topic reinforces it, so recomputing is
   cheap.
+- **Stimulus pressure.** Not in the grid either, and not for the same reason:
+  it is computed by distance on demand, because materialising it is
+  O(radius²) per stimulus per tick and that cost is what forces the radius
+  down to a value where news never reaches anyone. See
+  [`concepts/stimulus-pipeline.md`](stimulus-pipeline.md).
 - **Anything a dot knows.** Beliefs, intentions and memory live above the
   engine. The state is the world, not the minds in it.
 - **Wall-clock time, real dates, network results.** They would make `step`

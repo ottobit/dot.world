@@ -54,6 +54,7 @@ export function createWorld(options: CreateWorldOptions): WorldState {
     height: config.height,
     dots,
     marks: [],
+    stimuli: [],
     nextMarkSeq: 0,
   };
 }

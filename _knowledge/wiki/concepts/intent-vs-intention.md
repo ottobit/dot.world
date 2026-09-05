@@ -5,7 +5,7 @@ title: What is the difference between an intent and an intention?
 covers: [src/core/types.ts, src/core/step.ts]
 exports: [Intent, IntentKind, RejectReason, WorldEvent, orderIntents]
 depends_on: [glossary#intent, glossary#intention, contracts/step-function]
-updated: 2026-09-04
+updated: 2026-09-05
 ---
 
 # Intent vs intention
@@ -42,6 +42,13 @@ action failed and can plan around it.
 
 Clamping is not refusal. A move past the speed limit or into a wall is applied
 at the limit and reported as `move-clamped`.
+
+## Not everything in the world comes from an intent
+
+`WorldEvent` also carries things nobody asked for: `mark-faded`,
+`stimulus-arrived`, `stimulus-faded`. These are the world moving on by itself.
+They are events without an intent behind them, which is the tell that they
+belong in the end-of-tick pass rather than in the intent vocabulary.
 
 ## What NOT to do
 

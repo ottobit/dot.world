@@ -5,7 +5,7 @@ title: What are the guarantees of step(), and what breaks if you relax them?
 covers: [src/core/step.ts, src/core/types.ts, src/core/hash.ts, src/core/rng.ts]
 exports: [step, orderIntents, hashState, canonicalise, createRng, seedToState]
 depends_on: [decisions/0002-sync-ticks-async-reasoning, decisions/0003-engine-owns-state, glossary#intent]
-updated: 2026-09-04
+updated: 2026-09-05
 ---
 
 # Contract — `step()`
@@ -14,14 +14,24 @@ updated: 2026-09-04
 before adding a rule that can refuse an intent.
 
 ```ts
-step(state: WorldState, intents: readonly Intent[], config: WorldConfig)
-  -> { state: WorldState; events: readonly WorldEvent[] }
+step(
+  state: WorldState,
+  intents: readonly Intent[],
+  config: WorldConfig,
+  arrivals?: readonly ArrivingStimulus[],
+) -> { state: WorldState; events: readonly WorldEvent[] }
 ```
+
+`arrivals` are news entering the world this tick. They are *given* to `step`
+rather than written into the state by anyone else, so placement stays inside
+the engine and inside the seed — see
+[`concepts/stimulus-pipeline.md`](../concepts/stimulus-pipeline.md).
 
 ## Guarantees
 
 1. **Pure.** No clock, no I/O, no unseeded randomness. Two calls with equal
-   arguments return equal results.
+   arguments return equal results — including the randomness used to place an
+   arriving stimulus, which is drawn from `state.rngState` and written back.
 2. **The input is not mutated.** `hashState(before)` is unchanged after the
    call. Tested directly.
 3. **Order never depends on arrival.** Intents are sorted by kind, then dot id,
@@ -44,14 +54,25 @@ energy it just gained. Marking resolves after moving so a mark lands where the
 dot ended up — which is what "I passed here" has to mean for
 [stigmergy](../glossary.md#stigmergy) to work at all.
 
+## End of tick
+
+After intents resolve, and regardless of what anyone intended: marks decay and
+fade, stimuli decay and fade, arrivals land, and expired sayings clear.
+Arrivals land **before** the decay pass, so news that appears this tick is
+perceptible next tick rather than a tick later.
+
 ## Deviation from the plan, recorded
 
-The plan sketched `step(state, intents, rng)`. The signature here takes
-`config` instead and leaves the generator inside `state.rngState`. Passing a
-live generator alongside a state that also stores its seed is two sources of
-truth for the same thing, and the one in the argument would not survive
-serialisation into a run log. No rule currently draws from it; when one does,
-it must read from `state.rngState` and write the advanced state back.
+The plan sketched `step(state, intents, rng)`. The signature takes `config`
+instead and leaves the generator inside `state.rngState`. Passing a live
+generator alongside a state that also stores its seed is two sources of truth,
+and the argument copy would not survive serialisation into a run log.
+
+Stimulus placement is the first rule to draw from it, so `rngState` now
+advances during a tick and the advanced value is written into the returned
+state. Any future rule needing randomness must do the same: read from the
+state, write it back. A generator held anywhere else cannot be replayed,
+because the run log does not carry one.
 
 ## What NOT to do
 
