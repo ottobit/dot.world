@@ -72,4 +72,4 @@ Answers worth keeping, filed back from Query.
 | page | what it answers |
 |---|---|
 | [`findings/portfolio-handoff.md`](findings/portfolio-handoff.md) | What should the portfolio page say about Dot World, and what must it not claim? |
-| [`findings/diagram-corrections.md`](findings/diagram-corrections.md) | Which three things does the published diagram get wrong, and what should replace them? |
+| [`findings/diagram-corrections.md`](findings/diagram-corrections.md) | Which three things did the published diagram get wrong, and what replaced them? |

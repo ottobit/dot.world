@@ -20,12 +20,12 @@ extracted from those, with sources named.
 
 ---
 
-## 1. The published diagram is wrong, and that is the first job
+## 1. The published diagram was wrong. It has been redrawn
 
-Three things on it are contradicted by the code, deliberately, and it omits
-the marks entirely. Spelled out with the replacement for each in
-**[`diagram-corrections.md`](diagram-corrections.md)** — that is the first
-job, because the diagram is the first thing anyone opening the page sees.
+Three things on it were contradicted by the code, deliberately, and it omitted
+the marks entirely. Each one, and what replaced it, is in
+**[`diagram-corrections.md`](diagram-corrections.md)**. Shipped 2026-09-05 in
+`ottobit/portfolio#136`, along with the page itself.
 
 ## 2. The material worth writing about
 
@@ -82,6 +82,11 @@ One fact, one place; link to the rest.
 Saying these plainly is worth more than hiding them. A portfolio page that
 distinguishes what is verified from what is merely built is doing the thing
 the project is about.
+
+**The published page now says all three**, in its "Where it stands" section,
+in the same voice and at the same weight as the numbers that went well. When
+one of them stops being true — the first live model call, the first parsed
+feed — that section is what has to change, and this page with it.
 
 ---
 
