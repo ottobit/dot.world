@@ -41,7 +41,8 @@ shape.
 |---|---|
 | `ScriptedPolicy` | pure heuristic, no model. See below. |
 | `ReplayPolicy` | returns what a run log recorded for that tick |
-| `ModelPolicy` | not built yet — step 7 of the work order |
+| `ModelPolicy` | one model call per deliberation, with retry and fallback — [`contracts/language-model.md`](language-model.md) |
+| `BudgetedPolicy` | wraps the two and enforces the cap — [`concepts/deliberation-budget.md`](../concepts/deliberation-budget.md) |
 
 **`ScriptedPolicy` is not a test double.** It is the fallback when the
 deliberation budget is exhausted, the policy behind a demo with no backend, and
