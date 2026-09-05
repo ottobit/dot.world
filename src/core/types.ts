@@ -25,6 +25,26 @@ export interface Mark {
   readonly byDot: DotId;
 }
 
+/**
+ * An enriched news item inside the world. It lands like weather rather than
+ * arriving like a message: it creates topic pressure over a small area and
+ * fades. A dot never reads the title — the world holds it for the viewer and
+ * the log, but a dot only feels the pressure. See decision 0005.
+ */
+export interface Stimulus {
+  readonly id: string;
+  readonly sourceId: string;
+  readonly title: string;
+  readonly url: string | null;
+  readonly topics: readonly Topic[];
+  /** -1 grim, +1 bright. Carried for later; nothing reads it yet. */
+  readonly valence: number;
+  /** Decays every tick; dropped below `stimulusEpsilon`. */
+  readonly intensity: number;
+  readonly pos: Vec2;
+  readonly arrivedTick: number;
+}
+
 export interface Dot {
   readonly id: DotId;
   readonly pos: Vec2;
@@ -52,6 +72,7 @@ export interface WorldState {
   readonly height: number;
   readonly dots: readonly Dot[];
   readonly marks: readonly Mark[];
+  readonly stimuli: readonly Stimulus[];
   readonly nextMarkSeq: number;
 }
 
@@ -82,6 +103,8 @@ export type WorldEvent =
   | { readonly kind: 'rested'; readonly dotId: DotId }
   | { readonly kind: 'said'; readonly dotId: DotId; readonly text: string }
   | { readonly kind: 'mark-faded'; readonly markId: MarkId }
+  | { readonly kind: 'stimulus-arrived'; readonly stimulusId: string; readonly topics: readonly Topic[]; readonly title: string }
+  | { readonly kind: 'stimulus-faded'; readonly stimulusId: string }
   | { readonly kind: 'intent-rejected'; readonly dotId: DotId; readonly intent: IntentKind; readonly reason: RejectReason };
 
 export interface WorldConfig {
@@ -102,6 +125,14 @@ export interface WorldConfig {
   readonly markInitialStrength: number;
   /** Ticks a `say` stays visible. */
   readonly sayDurationTicks: number;
+  /** Multiplied into every stimulus's intensity each tick. */
+  readonly stimulusDecay: number;
+  readonly stimulusEpsilon: number;
+  /**
+   * Cells a stimulus is felt across, with linear falloff. Large on purpose: at
+   * 3 a stimulus covers 1.2% of a 64x36 world and nobody ever walks into it.
+   */
+  readonly stimulusRadius: number;
 }
 
 export const DEFAULT_CONFIG: WorldConfig = {
@@ -117,4 +148,9 @@ export const DEFAULT_CONFIG: WorldConfig = {
   markMergeDistance: 1,
   markInitialStrength: 1,
   sayDurationTicks: 24,
+  // Slower than marks: news should outlast the trails it provokes, otherwise
+  // a dot can never follow one to its source before it is gone.
+  stimulusDecay: 0.992,
+  stimulusEpsilon: 0.08,
+  stimulusRadius: 10,
 };

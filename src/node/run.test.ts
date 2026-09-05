@@ -7,13 +7,15 @@ import { readRunLog } from './runlog.js';
 
 const workspace = mkdtempSync(join(tmpdir(), 'dot-world-'));
 
-const defaults = { ticks: 200, seed: 42, dots: 6, out: null, replay: null, quiet: true };
+const defaults = { ticks: 200, seed: 42, dots: 6, out: null, replay: null, quiet: true, news: false };
 
 describe('argument parsing', () => {
   it('falls back to sensible defaults and reads the flags it is given', () => {
-    expect(parseArgs([])).toEqual({ ticks: 1000, seed: 42, dots: 12, out: null, replay: null, quiet: false });
-    expect(parseArgs(['--ticks', '5', '--seed', '7', '--dots', '2', '--out', 'x.jsonl', '--quiet'])).toEqual({
-      ticks: 5, seed: 7, dots: 2, out: 'x.jsonl', replay: null, quiet: true,
+    expect(parseArgs([])).toEqual({
+      ticks: 1000, seed: 42, dots: 12, out: null, replay: null, quiet: false, news: false,
+    });
+    expect(parseArgs(['--ticks', '5', '--seed', '7', '--dots', '2', '--out', 'x.jsonl', '--quiet', '--news'])).toEqual({
+      ticks: 5, seed: 7, dots: 2, out: 'x.jsonl', replay: null, quiet: true, news: true,
     });
   });
 });

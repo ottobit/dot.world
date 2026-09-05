@@ -158,7 +158,7 @@ function renderInspector(): void {
   hintEl.hidden = true;
 
   const grid = buildGrid(session.state.marks, session.state.width, session.state.height);
-  const percept: Percept = buildPercept(session.state, dot, grid, session.events);
+  const percept: Percept = buildPercept(session.state, dot, grid, session.events, session.config);
   const decision = session.decisions.find((d) => d.dotId === selected);
   const personality = session.personalities.get(dot.id);
 

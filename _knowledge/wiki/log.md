@@ -236,3 +236,39 @@ Replay mode is verified in the browser too: a 300-tick, 8-dot sample run ships
 as a page asset (280 kB) and an end-to-end test drives it to the last tick.
 `ReplayPolicy` throws on a tick the log does not carry, so reaching tick 300
 with zero console errors *is* the assertion that every tick matched.
+
+## [2026-09-05] ingest | src/news — the world stops being sealed off
+
+Step 6 of the work order. Two keyless public sources, a deterministic
+enricher, a poller, and stimuli that land in the world as pressure.
+Wrote [`contracts/news.md`](contracts/news.md) and
+[`concepts/stimulus-pipeline.md`](concepts/stimulus-pipeline.md). 66 tests.
+
+**A design flaw the tests caught before any human did.** The first version used
+`stimulusRadius: 3`. On a 64×36 world that is **1.2% of the cells**: twelve
+dots essentially never walk into a stimulus, so news would have been
+decoration. The test that failed was the one asserting a dot moves toward news
+it cares about — it did not move, and the reason was the radius, not the test.
+
+Raising the radius was only affordable after changing how pressure is computed:
+**by distance on demand** rather than materialised into the grid. Materialising
+is O(radius²) per stimulus per tick, which is exactly what forced the radius to
+be small. It is 10 now (~14% of the world), and a test holds that fraction
+above 10%.
+
+**Two verifications worth naming.** Adding `stimuli` to `WorldState` meant
+extending `canonicalise` in the same commit — the rule
+[`contracts/core-purity.md`](contracts/core-purity.md) states — and a test now
+asserts two worlds differing only in news hash differently. And a 1000-tick run
+without `--news` still ends at hash `fdc774c2`, unchanged from before this
+work: the feature added nothing to existing behaviour.
+
+**What is not verified.** Both live endpoints answer `403` through this
+environment's egress proxy, so nothing here has parsed a real response. The
+parsing matches `ottobit/portfolio`'s `script.js` URL for URL and field for
+field — code that runs against these endpoints in production — and fixture
+tests pin those shapes. The first run on an unblocked network should check it.
+
+Measured with real headlines through a stubbed source, 200 ticks and 12 dots:
+**10 of 12 dots were inside some news at any moment**, marks grew 0 → 14
+alongside, and the enricher assigned the expected topics and valence.

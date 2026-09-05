@@ -14,7 +14,7 @@ function perceptFor(seed = 1, marks: Mark[] = [], previousEvents: WorldEvent[] =
   const world = { ...createWorld({ seed, dotCount: 3 }), marks };
   const dot = world.dots[0]!;
   const grid = buildGrid(marks, world.width, world.height);
-  return { world, dot, percept: buildPercept(world, dot, grid, previousEvents) };
+  return { world, dot, percept: buildPercept(world, dot, grid, previousEvents, config) };
 }
 
 describe('percept', () => {
@@ -29,7 +29,7 @@ describe('percept', () => {
       byDot: 'dot-000',
     }));
     const grid = buildGrid(marks, world.width, world.height);
-    const percept = buildPercept(world, world.dots[0]!, grid, []);
+    const percept = buildPercept(world, world.dots[0]!, grid, [], config);
     // Rough but honest: ~4 characters per token. The percept *is* the prompt,
     // so this is a design constraint, not a nicety.
     const approxTokens = JSON.stringify(percept).length / 4;
@@ -45,7 +45,7 @@ describe('percept', () => {
       ...base,
       dots: base.dots.map((d, i) => ({ ...d, pos: { x: 10 + i * 2, y: 10 } })),
     };
-    const percept = buildPercept(world, world.dots[0]!, buildGrid([], world.width, world.height), []);
+    const percept = buildPercept(world, world.dots[0]!, buildGrid([], world.width, world.height), [], config);
     expect(percept.neighbours.length).toBe(2);
     for (const n of percept.neighbours) {
       expect(Object.keys(n).sort()).toEqual(['colour', 'dir', 'dist', 'id']);
@@ -69,7 +69,7 @@ describe('percept', () => {
     const marks: Mark[] = [
       { id: 'm', pos: { x: cx + 1.5, y: cy + 0.5 }, topic: 'ai', strength: 5, createdTick: 0, byDot: 'x' },
     ];
-    const percept = buildPercept(world, dot, buildGrid(marks, world.width, world.height), []);
+    const percept = buildPercept(world, dot, buildGrid(marks, world.width, world.height), [], config);
     expect(percept.pull?.topic).toBe('ai');
     expect(percept.pull?.dir[0]).toBeGreaterThan(0); // to the east, where the mark is
   });
@@ -118,7 +118,7 @@ describe('scripted policy', () => {
     for (let i = 0; i < 300 && world.marks.length === 0; i++) {
       const grid = buildGrid(world.marks, world.width, world.height);
       const decisions = await policy.decide(
-        world.dots.map((d) => ({ percept: buildPercept(world, d, grid, previous), personality: people.get(d.id)! })),
+        world.dots.map((d) => ({ percept: buildPercept(world, d, grid, previous, config), personality: people.get(d.id)! })),
       );
       const result = step(world, decisions.flatMap((d) => d.intents), config);
       world = result.state;
