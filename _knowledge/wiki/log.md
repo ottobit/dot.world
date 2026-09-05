@@ -344,3 +344,34 @@ dots keep acting on a previous plan. Decision
 it is not built, and claiming otherwise would be false.
 
 A 1000-tick scripted run still ends at hash `fdc774c2`.
+
+## [2026-09-05] ingest | the dots have faces
+
+The viewer's dots were plain balls. They now have eyes, taken from the mascot
+on the portfolio — a 38px ball with two 7px eyes 7px apart, so an eye is 0.19
+of the radius and sits 0.37 out from the centre.
+
+**Similar to that dot, deliberately not identical.** The eyes sit slightly
+above centre, which reads alert rather than sleepy, and they follow where the
+dot **intends** to go rather than following the cursor. The gaze comes from the
+move intent its policy produced, so the eyes show a decision a tick before the
+body finishes it — and a world of dots looking in different directions turns
+out to be readable at a glance in a way a world of identical balls was not.
+That was not the goal; it is the better half of the result.
+
+**A constraint that had to be dealt with rather than ignored.** At the previous
+dot size an eye came out under a pixel — 0.19 of a five-pixel radius. Two grey
+smudges are worse than no face. The dot radius went from 0.34 to 0.45 of a
+cell, and `eyeGeometry` returns `null` below `MIN_RADIUS_FOR_EYES` so a
+zoomed-out world falls back to plain balls instead of mush.
+
+Blinking is derived from the dot id and the tick rather than a timer: twelve
+dots never blink together, and a replay blinks identically.
+
+Proved rather than assumed: pure white is the only colour the canvas paints
+for eyes and nothing else, so an end-to-end test counts pure-white pixels.
+`contracts/viewer.md` now says not to paint anything else pure white, because
+that assertion is the only thing standing between a face and a claim of one.
+
+The gaze is **not** in the world state. It is a rendering of intent, and a dot
+cannot see another dot's eyes anyway.

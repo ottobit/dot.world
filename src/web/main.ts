@@ -58,6 +58,35 @@ let speed = 2;
 let strengthScale = 1;
 let ticking = false;
 
+/**
+ * Where each dot is looking. Not world state — it is a rendering of intent, so
+ * it lives in the viewer.
+ *
+ * A dot looks where it *wants* to go rather than where it has been: the gaze
+ * comes from the move intent its policy produced, which means the eyes show
+ * the decision a tick before the body finishes carrying it out. A dot that
+ * rests or marks lets its gaze drift back to centre.
+ */
+const gaze = new Map<string, [number, number]>();
+
+function updateGaze(decisions: readonly Decision[]): void {
+  for (const decision of decisions) {
+    const move = decision.intents.find((i) => i.kind === 'move');
+    let target: [number, number] = [0, 0];
+    if (move && move.kind === 'move') {
+      const len = Math.sqrt(move.dx * move.dx + move.dy * move.dy);
+      if (len > 0) target = [move.dx / len, move.dy / len];
+    }
+    // Eased rather than snapped: eyes that teleport read as a glitch, eyes
+    // that swing read as a creature changing its mind.
+    const current = gaze.get(decision.dotId) ?? [0, 0];
+    gaze.set(decision.dotId, [
+      current[0] + (target[0] - current[0]) * 0.25,
+      current[1] + (target[1] - current[1]) * 0.25,
+    ]);
+  }
+}
+
 async function buildSession(): Promise<Session> {
   const config = resolveConfig();
   const replayUrl = new URLSearchParams(location.search).get('replay');
@@ -121,6 +150,7 @@ async function tick(): Promise<void> {
   session.state = result.state;
   session.events = result.events;
   session.decisions = result.decisions;
+  updateGaze(result.decisions);
   for (const m of session.state.marks) strengthScale = Math.max(strengthScale, m.strength);
 }
 
@@ -189,7 +219,7 @@ function renderInspector(): void {
 }
 
 function frame(): void {
-  draw(ctx!, session.state, { theme: theme(), selected, strengthScale });
+  draw(ctx!, session.state, { theme: theme(), selected, strengthScale, gaze });
   renderStats();
   renderInspector();
 }
@@ -218,6 +248,7 @@ el('restart').addEventListener('click', () => {
     session = s;
     strengthScale = 1;
     selected = null;
+    gaze.clear();
   });
 });
 el<HTMLSelectElement>('speed').addEventListener('change', (e) => {
