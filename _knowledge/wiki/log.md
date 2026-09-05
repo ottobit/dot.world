@@ -404,3 +404,25 @@ not hidden, and the news feeds have never been read from here.
 It also says not to duplicate this wiki. A portfolio page repeating the
 contracts would be false within two commits, and nothing watches it — which is
 the exact failure this repository was built to avoid.
+
+## [2026-09-05] ingest | the portfolio page, redrawn and shipped
+
+`ottobit/portfolio#136` merged and deployed. The diagram was redrawn against
+[`findings/diagram-corrections.md`](findings/diagram-corrections.md): `Reason`
+and `Decide` collapsed into a dashed asynchronous `Deliberate` branch off the
+tick loop, `Act → World state` relabelled "an intent, not a write", news routed
+`News feed → Enrich, once → stimulus → World state` instead of into `Perceive`,
+and a `Marks` box added for the first time — "the only channel between dots".
+
+The page dropped "first sketch", corrected "a world state every dot writes to"
+(only the engine writes), and gained a "Where it stands" section carrying the
+measured numbers and, at the same weight, the three things that are built but
+unverified: no real model has driven this world, model latency is not hidden,
+and the news feeds have never been read.
+
+Both files are snapshotted verbatim in `raw/portfolio/` as
+`*-2026-09-05-shipped.*`, so the wiki keeps what was published, not a
+description of it. The originals stay where they are: they are the source this
+project started from, and rewriting a raw source to match the present is
+exactly the drift this layer exists to prevent.
+
