@@ -375,3 +375,32 @@ that assertion is the only thing standing between a face and a claim of one.
 
 The gaze is **not** in the world state. It is a rendering of intent, and a dot
 cannot see another dot's eyes anyway.
+
+## [2026-09-05] query | how to document this on the portfolio
+
+Filed as [`findings/portfolio-handoff.md`](findings/portfolio-handoff.md)
+rather than answered in a conversation, because a conversation is not a place
+a future session can read.
+
+There is no shared memory between sessions and none was running to message.
+The channel that does work is the one this repository has been for two days:
+it is public, a portfolio session can clone it, and the index is the entry
+point. That is more reliable than a handover, because it is versioned and the
+lint checks it.
+
+It came out at 139 lines and the lint bounced it on this repository's own
+rule — one page, one question, 120 lines. Split rather than exempted, into
+the handover and
+[`findings/diagram-corrections.md`](findings/diagram-corrections.md).
+
+The pages carry three things: the **three corrections the published diagram
+needs** (Reason/Decide out of the tick loop, `Act` emitting an intent rather
+than writing, news entering through Enrich rather than Perceive — plus the
+marks, which the diagram omits entirely), the **measured findings worth
+writing about** rather than a feature list, and an explicit list of **what the
+page must not claim** — no real model has ever driven this world, latency is
+not hidden, and the news feeds have never been read from here.
+
+It also says not to duplicate this wiki. A portfolio page repeating the
+contracts would be false within two commits, and nothing watches it — which is
+the exact failure this repository was built to avoid.
