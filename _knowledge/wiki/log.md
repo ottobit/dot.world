@@ -272,3 +272,30 @@ tests pin those shapes. The first run on an unblocked network should check it.
 Measured with real headlines through a stubbed source, 200 ticks and 12 dots:
 **10 of 12 dots were inside some news at any moment**, marks grew 0 → 14
 alongside, and the enricher assigned the expected topics and valence.
+
+## [2026-09-05] lint | CI caught three stale pages that local runs could not
+
+`wiki lint (strict)` failed on PR #5 while the same command passed locally.
+Not a flake, and not a CI quirk: the **staleness check can only see committed
+files**. `git log -1 -- <file>` returns nothing for a file that is not yet in
+history, so locally every page under `covers:` was silently skipped. CI runs
+with `fetch-depth: 0` against the pushed commits, where the dates exist.
+
+Three pages described code the news work had changed underneath them:
+
+- [`contracts/step-function.md`](contracts/step-function.md) — the worst of the
+  three. It stated "no rule currently draws from it" about `rngState`. Stimulus
+  placement had made that **false**, and it is exactly the kind of claim a
+  future agent would have built on. Now documents the `arrivals` parameter, the
+  end-of-tick order, and the obligation to read the generator from the state
+  and write it back.
+- [`concepts/world-state.md`](concepts/world-state.md) — missing `stimuli`, and
+  missing why stimulus pressure is *also* kept out of the grid.
+- [`concepts/intent-vs-intention.md`](concepts/intent-vs-intention.md) — events
+  that no intent causes now have their own section.
+
+**The local/CI gap is worth keeping in mind rather than closing.** Making the
+check work on uncommitted files would mean guessing at mtimes, which drift for
+reasons that have nothing to do with authorship. The honest shape is what it
+already is: a warning locally, an error in CI, and the knowledge that a green
+local run does not clear staleness.
