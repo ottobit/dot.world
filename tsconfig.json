@@ -12,6 +12,6 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true
   },
-  "include": ["src", "_knowledge/lint"],
+  "include": ["src", "_knowledge/lint", "e2e", "playwright.config.ts", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "_knowledge/raw", "_knowledge/wiki"]
 }
