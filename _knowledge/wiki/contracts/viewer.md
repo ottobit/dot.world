@@ -3,7 +3,7 @@ id: contracts/viewer
 type: contract
 title: What does the viewer run, and why is it not a rendering of a simulation?
 covers: [src/web/main.ts, src/web/render.ts, vite.config.ts, playwright.config.ts]
-exports: [draw, hitTest, topicColour, TOPIC_COLOURS, THEMES]
+exports: [draw, hitTest, topicColour, TOPIC_COLOURS, THEMES, eyeGeometry, isBlinking, MIN_RADIUS_FOR_EYES]
 depends_on: [decisions/0001-typescript-isomorphic-engine, contracts/run-log, concepts/percept]
 updated: 2026-09-05
 ---
@@ -38,9 +38,36 @@ recorded decisions are re-played in a browser that never sees an API key.
   [percept](../concepts/percept.md) uses visible without competing with
   anything.
 - **Energy as a hollow core**, not a bar. A bar over a six-pixel dot is
-  unreadable; a dying dot going hollow is not.
+  unreadable; a dying dot going hollow is not. Drawn under the eyes, so a tired
+  dot looks drained rather than blindfolded.
+- **Eyes**, and they are the point of the next section.
 - **The inspector** shows the exact percept, the decision and the rationale.
   It is what makes this a thing you can reason about rather than an aquarium.
+
+## The dots have faces
+
+The proportions come from the mascot on the portfolio: a 38px ball with two
+7px eyes 7px apart, so an eye is **0.19 of the radius** and sits **0.37 out**
+from the centre. `eyeGeometry` is pure and exported, so those numbers are
+tested without a canvas.
+
+Two things are deliberately **not** the same, because these are not that dot —
+they are its relatives:
+
+- The eyes sit slightly above centre, which reads alert rather than sleepy.
+- **They follow where the dot intends to go**, not the cursor. The gaze comes
+  from the move intent its policy produced, so the eyes show the decision a
+  tick before the body finishes carrying it out — and a world of dots looking
+  in different directions is readable at a glance in a way a world of identical
+  balls is not.
+
+A blink is derived from the dot id and the tick rather than a timer, so twelve
+dots never blink in unison and a replay blinks identically. It draws as a flat
+line: a shrinking circle reads as squinting.
+
+**Below `MIN_RADIUS_FOR_EYES` the dot stays a plain ball.** An eye at 0.19 of a
+five-pixel radius is under a pixel, and two grey smudges are worse than no
+face. The dot radius went from 0.34 to 0.45 of a cell for the same reason.
 
 ## What NOT to do
 
@@ -52,14 +79,20 @@ recorded decisions are re-played in a browser that never sees an API key.
   `es2020` keeps older browsers, and a wrapper function costs three lines.
 - **Do not assert only through the DOM in the end-to-end test.** One test
   counts distinct colours on the canvas, because "everything runs, nothing is
-  drawn" passes every DOM assertion there is.
+  drawn" passes every DOM assertion there is. Another counts **pure white**
+  pixels, which the canvas paints for eyes and nothing else — the background is
+  `#fbfbf9`, the marks are topic colours, the dots are the clone palette.
+- **Do not paint anything else pure white.** That assertion is the only proof
+  the faces are actually drawn.
+- **Do not put the gaze in the world state.** It is a rendering of intent, not
+  a fact about the world, and a dot cannot see another's eyes anyway.
 
 ## Verification
 
 `npm run e2e` drives Chromium. It asserts twelve dots, a world that actually
-advances, marks that appear, an inspector that opens with the percept in it,
-pause that really stops, step that advances exactly one tick, and **zero
-console errors** — a 404 on a missing favicon failed this and was fixed by
+advances, marks that appear, faces that are painted, an inspector that opens
+with the percept in it, pause that really stops, step that advances exactly one
+tick, and **zero console errors** — a 404 on a missing favicon failed this and was fixed by
 adding the favicon rather than by loosening the assertion.
 
 A 300-tick sample run ships as a page asset so replay mode is exercised end to

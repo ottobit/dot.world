@@ -93,6 +93,34 @@ test('the canvas is painted, not blank', async ({ page }) => {
   expect(distinct).toBeGreaterThan(5);
 });
 
+test('the dots have eyes', async ({ page }) => {
+  const errors: string[] = [];
+  failOnConsoleErrors(page, errors);
+
+  await page.goto('/');
+  await page.evaluate(() => window.dotWorld.ready);
+  await expect.poll(() => page.evaluate(() => window.dotWorld.state().tick)).toBeGreaterThan(10);
+
+  // Pure white is the only colour the canvas paints for eyes and nothing else —
+  // the background is #fbfbf9, the marks are topic colours, the dots are the
+  // clone palette. So counting pure-white pixels proves the eyes are drawn
+  // rather than assuming a green build means a visible face.
+  const white = await page.evaluate(() => {
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const data = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let n = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] === 255 && data[i + 1] === 255 && data[i + 2] === 255) n += 1;
+    }
+    return n;
+  });
+  // Twelve dots, two eyes each, several pixels apiece — but blinking and
+  // speech bubbles move the exact figure, so the assertion is "clearly some".
+  expect(white).toBeGreaterThan(50);
+
+  expect(errors, `console errors: ${errors.join(' | ')}`).toEqual([]);
+});
+
 test('replay mode re-plays a recorded run', async ({ page }) => {
   const errors: string[] = [];
   failOnConsoleErrors(page, errors);
