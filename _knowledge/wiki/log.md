@@ -299,3 +299,48 @@ check work on uncommitted files would mean guessing at mtimes, which drift for
 reasons that have nothing to do with authorship. The honest shape is what it
 already is: a warning locally, an error in CI, and the knowledge that a green
 local run does not clear staleness.
+
+## [2026-09-05] ingest | src/models — a dot that actually reasons
+
+Step 7 of the work order, and the last module the milestone calls for.
+`LanguageModel` transports (echo, Ollama, OpenAI-compatible), prompt building
+and parsing, `ModelPolicy` with retry and fallback, and the
+`BudgetedPolicy` that enforces the cap. 90 tests. Wrote
+[`contracts/language-model.md`](contracts/language-model.md),
+[`concepts/deliberation-budget.md`](concepts/deliberation-budget.md) and
+[`recipes/add-a-model-provider.md`](recipes/add-a-model-provider.md).
+
+**Four things went wrong and were found by measuring, not by reading.**
+
+1. The echo model read `"topic":"<topic>"` out of the *schema example in the
+   system prompt* instead of the percept, so every reply failed validation. A
+   stub reading the wrong message.
+2. A dot that had never deliberated counted as infinitely stale, so on the
+   first tick every dot fired the staleness rule and the whole budget went
+   before anything had happened. A newborn dot is new, not stale.
+3. **25% of replies rejected** as follow-with-no-direction. Not a model
+   problem: a dot can sense a topic while standing on its peak, and the prompt
+   was offering `follow` anyway. It now sends `canDo`, and the failure has its
+   own name rather than being filed under `unsensed-topic` — where it would
+   have sent someone hunting a hallucination that never happened. After: **0%
+   rejected**.
+4. **1014 of 1146 deliberations were spent on exhausted dots.** Low energy was
+   the highest-priority trigger, on the reasoning that it was the most pressing
+   question. Backwards: it is the least interesting one, because the answer is
+   always "rest" and the scripted layer already knows it. An exhausted dot is
+   no longer a candidate at all.
+
+**Verified against a real failure, not a stub:** with no Ollama listening,
+`--policy model --model ollama:llama3.2` produced 106 transport errors, 106
+fallbacks, and a world that ran to completion.
+
+**Two things not verified, said plainly.** Neither HTTP transport has parsed a
+real response — the egress proxy blocks outbound HTTP and no Ollama runs here,
+so fixtures pin the documented shapes and nothing more. And the cap bounds how
+many calls happen per tick but does **not** hide their latency: `advance`
+awaits the policy, so a real model would slow the world rather than letting
+dots keep acting on a previous plan. Decision
+[`0002`](decisions/0002-sync-ticks-async-reasoning.md) describes that shape;
+it is not built, and claiming otherwise would be false.
+
+A 1000-tick scripted run still ends at hash `fdc774c2`.

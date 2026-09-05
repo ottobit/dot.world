@@ -7,15 +7,23 @@ import { readRunLog } from './runlog.js';
 
 const workspace = mkdtempSync(join(tmpdir(), 'dot-world-'));
 
-const defaults = { ticks: 200, seed: 42, dots: 6, out: null, replay: null, quiet: true, news: false };
+const defaults = {
+  ticks: 200, seed: 42, dots: 6, out: null, replay: null, quiet: true, news: false,
+  policy: 'scripted', model: 'echo', baseUrl: null, maxInFlight: 4,
+};
 
 describe('argument parsing', () => {
   it('falls back to sensible defaults and reads the flags it is given', () => {
     expect(parseArgs([])).toEqual({
       ticks: 1000, seed: 42, dots: 12, out: null, replay: null, quiet: false, news: false,
+      policy: 'scripted', model: 'echo', baseUrl: null, maxInFlight: 4,
     });
-    expect(parseArgs(['--ticks', '5', '--seed', '7', '--dots', '2', '--out', 'x.jsonl', '--quiet', '--news'])).toEqual({
+    expect(parseArgs([
+      '--ticks', '5', '--seed', '7', '--dots', '2', '--out', 'x.jsonl', '--quiet', '--news',
+      '--policy', 'model', '--model', 'ollama:llama3.2', '--max-inflight', '2',
+    ])).toEqual({
       ticks: 5, seed: 7, dots: 2, out: 'x.jsonl', replay: null, quiet: true, news: true,
+      policy: 'model', model: 'ollama:llama3.2', baseUrl: null, maxInFlight: 2,
     });
   });
 });
